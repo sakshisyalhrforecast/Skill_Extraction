@@ -101,11 +101,30 @@ public class SpellCheckFinal
     createMutations(newMap.values());
     doFurtherProcessing(newMap);
     
+    /*
     DBCollection lnk_basjobdataext_dem_skill = db.getCollection("Lnk_basjobdataext_dem_skill");
     for (Entry entry : skillList.entrySet()) {
     	//entry = (Map.Entry)skillId.next();     
       for (Entry subentry : ((HashMap<Integer, String>) entry.getValue()).entrySet()) {
         DBObject lnk_doc = new BasicDBObject();
+        lnk_doc.put(entry.getKey().toString().replace(".", ""), subentry.getKey());
+        lnk_basjobdataext_dem_skill.insert(new DBObject[] { lnk_doc });
+      }
+    }
+    */
+    
+    for (Entry entry : skillList.entrySet()) {
+    	//entry = (Map.Entry)skillId.next();     
+      for (Entry subentry : ((HashMap<Integer, String>) entry.getValue()).entrySet()) {
+        BasicDBObject query_update = new BasicDBObject();
+        query_update.put("craLocalJobId", entry.getKey().toString());
+        BasicDBObject fields = new BasicDBObject();
+        fields.put("craLocalJobID", Integer.valueOf(1));
+        fields.put("craCompanyName", Integer.valueOf(1));
+        fields.put("craJobDescription", Integer.valueOf(1));
+        bas_job.find(query, fields);
+        //query.put("craLangCodeDescription", "en");
+        DBCursor cursor = bas_job.find(query, fields);
         lnk_doc.put(entry.getKey().toString().replace(".", ""), subentry.getKey());
         lnk_basjobdataext_dem_skill.insert(new DBObject[] { lnk_doc });
       }
